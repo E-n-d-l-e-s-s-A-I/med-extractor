@@ -6,7 +6,7 @@
     "timeout": 900,
     "generation_config": {
       "temperature": 0.01,
-      "max_new_tokens": 512,
+      "max_new_tokens": 8000,
       "repetition_penalty": 1.001
     }
   },
@@ -64,24 +64,85 @@
     },
     {
       "start_phrases": [
+        "Паспортная информация"
+      ],
+      "title": "Паспортная информация",
+      "text_blocks": [
+        {
+          "title": "ФИО",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Пол",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Возраст",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Дата рождения",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Паспорт",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Постоянное место жительства",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Адрес родственников",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Социальное положение",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Страховой статус",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Место работы",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Профессия(должность)",
+          "include_start_phrase": true
+        },
+        {
+          "title": "Группа инвалидности",
+          "include_start_phrase": true
+        }
+      ]
+    },
+    {
+      "start_phrases": [
         "Первичный врачебный осмотр"
       ],
       "title": "Первичный врачебный осмотр",
       "text_blocks": [
         {
-          "title": "Первичный врачебный осмотр"
+          "title": "Первичный врачебный осмотр",
+          "include_start_phrase": true
         },
         {
-          "title": "Жалобы"
+          "title": "Жалобы",
+          "include_start_phrase": true
         },
         {
-          "title": "Анамнез заболевания"
+          "title": "Анамнез заболевания",
+          "include_start_phrase": true
         },
         {
-          "title": "Анамнез жизни"
+          "title": "Анамнез жизни",
+          "include_start_phrase": true
         },
         {
-          "title": "Страховой анамнез"
+          "title": "Страховой анамнез",
+          "include_start_phrase": true
         },
         {
           "title": "Данные объективного осмотра",

@@ -80,7 +80,9 @@ class ChatDataset(Dataset):
             return None
 
         original_input_ids = self.get_tokens(record["messages"])
-        assert input_ids == original_input_ids[: len(input_ids)], f"{input_ids} vs {original_input_ids}"
+        assert input_ids == original_input_ids[: len(input_ids)], (
+            f"{input_ids} vs {original_input_ids}"
+        )
 
         if self.add_global_bos and input_ids[0] != self.tokenizer.bos_token_id:
             input_ids.insert(0, self.tokenizer.bos_token_id)
@@ -116,4 +118,4 @@ class ChatDataset(Dataset):
             "input_ids": input_ids,
             "labels": labels,
             "attention_mask": attention_mask,
-        } 
+        }
