@@ -111,6 +111,42 @@ class ConversationExtract:
         self
     ):
         self.messages = []
+        self._add_examples()
+    
+    def _add_examples(self):
+        """Добавляем примеры преобразований как историю диалога"""
+        examples = [
+            {
+                "user": "Лохматин Игорь Михайлович. Пол М, Возраст 54 лет.",
+                "assistant": """[
+  {"Имя": "ФИО", "Значение": "Лохматин Игорь Михайлович"},
+  {"Имя": "Пол", "Значение": "Мужской"},
+  {"Имя": "Возраст", "Значение": "54", "Единица": "лет"}
+]"""
+            },
+            {
+                "user": "Диагноз: острый фарингит, температура 38.5°C",
+                "assistant": """[
+  {"Имя": "Диагноз", "Значение": "острый фарингит"},
+  {"Имя": "температура", "Значение": "38.5", "Единица": "°C"}
+]"""
+            },
+            {
+                "user": "Пульс повышен мах. до 190 уд. мин. Брюшные болей, локализованные в нижней части, носящие переодический характер характер",
+                "assistant": """[
+  {"Имя": "Пульс","Характеристики": [{"Имя": "повышен","Значение": "190","Единица": "уд. мин."}]},
+  {"Имя": "Брюшные боли","Характеристики": [{"Имя": "Характер","Значение": "переодически"},{"Имя": "Локализация","Значение": "нижняя часть"}]}
+]"""
+            }
+        ]
+        
+        # Добавляем системное сообщение с инструкцией
+        self.add_system_message("Ты - медицинский ассистент, который преобразует текстовые описания в структурированный JSON. Отвечай ТОЛЬКО в формате JSON-массива.")
+        
+        # Добавляем примеры как историю диалога
+        for example in examples:
+            self.add_user_message(example["user"])
+            self.add_bot_message(example["assistant"])
     
     def add_system_message(self, message):
         self.messages.append({
@@ -194,7 +230,7 @@ class Inference(Resource):
         c = ConversationExtract()
         for message in request.json["conversation"]:
             if (message["role"] == "system"):
-                c.add_system_message(message["content"])
+                pass
             elif (message["role"] == "user"):
                 c.add_user_message(message["content"])
             elif (message["role"] == "assistant"):
