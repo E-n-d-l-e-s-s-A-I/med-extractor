@@ -94,6 +94,14 @@ print(f"Прошло времени: {timedelta(seconds = int(round(time.time() 
 
 
 tokenizer = AutoTokenizer.from_pretrained(trainer_config["base_model_name"], use_fast=False)
+if tokenizer.chat_template is None:
+    print("Нет шаблона чата устанавливаем")
+    tokenizer.chat_template = (
+        "{% for message in messages %}"
+        "{{ '<|start_header_id|>' + message['role'] + '<|end_header_id|>\n\n' + message['content'] + '<|eot_id|>' + '\n' }}"
+        "{% endfor %}"
+    )
+    
 # tokenizer.bos_token = "<|begin_of_text|>"
 # tokenizer.eos_token = "<|eot_id|>"
 tokenizer.pad_token = "<|begin_of_text|>"
