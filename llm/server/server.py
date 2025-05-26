@@ -164,7 +164,7 @@ def generate(model, tokenizer, prompt, generation_config):
 
 def clean_model_output(output):
     import regex
-    pattern = r'(?<!\\)(?:\\{2})*\[(?:[^\[\]{}]|(?R))*\]'
+    pattern = r'(?<!\\)(?:\\{2})*(?P<json>\{(?:[^{}]|(?P>json))*\}|\[(?:[^\[\]]|(?P>json))*\])'
     matches = regex.findall(pattern, output)
     if len(matches)>0:
         return matches[0]
@@ -222,6 +222,7 @@ class Inference(Resource):
         print(f"prompt:\n{prompt}")
         output = generate(model, tokenizer, prompt, g_config)
         print(f"output:\n{output}")
+        
         output = clean_model_output(output)
         print(f"output_json:\n{output}")
         
