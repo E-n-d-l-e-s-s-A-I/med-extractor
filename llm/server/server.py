@@ -68,7 +68,19 @@ if "adapter_name" in inference_config:
 model.eval()
 
 
-tokenizer = AutoTokenizer.from_pretrained(inference_config["tokenizer_name"], use_fast=False)
+tokenizer = AutoTokenizer.from_pretrained(
+    inference_config["tokenizer_name"],
+    use_fast=False,
+    padding_side="left"  # Важно для генерации
+)
+tokenizer.pad_token = tokenizer.eos_token
+tokenizer.add_special_tokens({
+    "additional_special_tokens": [
+        "<|start_header_id|>",
+        "<|end_header_id|>",
+        "<|eot_id|>"
+    ]
+})
 if tokenizer.chat_template is None:
     print("Нет шаблона чата устанавливаем")
     tokenizer.chat_template = (
@@ -124,15 +136,60 @@ class ConversationExtract:
 
 
 def generate(model, tokenizer, prompt, generation_config):
-    data = tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
-    data = {k: v.to(model.device) for k, v in data.items()}
-    output_ids = model.generate(**data, generation_config=generation_config)[0]
-    output_ids = output_ids[len(data["input_ids"][0]):]
-    output = tokenizer.decode(output_ids, skip_special_tokens=True).strip()
-    return output
+    inputs = tokenizer(
+        prompt,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=4096,  # Ограничьте максимальную длину
+        return_token_type_ids=False
+    ).to(model.device)
+
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            generation_config=generation_config,
+            pad_token_id=tokenizer.pad_token_id,
+            eos_token_id=tokenizer.eos_token_id,
+            do_sample=True,
+            temperature=0.7,
+            top_p=0.9,
+            max_new_tokens=512  # Ограничьте длину ответа
+        )
+
+    # Декодируем только сгенерированную часть
+    generated = outputs[0][inputs.input_ids.shape[1]:]
+    return tokenizer.decode(generated, skip_special_tokens=True).strip()
 
 
+def clean_model_output(output):
+    import re
+    # Удаляем все служебные токены и артефакты генерации
+    cleaned = re.sub(r'<\|.*?\|>|TokenNameIdentifier|[\u0400-\u04FF]+|\W*\b\w*[а-яА-Я]\w*\b\W*', '', output)
+    
+    # Ищем первый валидный JSON в тексте
+    json_match = re.search(r'(\[\s*\{.*?\}\s*\])', cleaned, re.DOTALL)
+    
+    if json_match:
+        json_str = json_match.group(1)
+        try:
+            # Пытаемся распарсить JSON
+            parsed = json.loads(json_str)
+            return json.dumps(parsed, indent=2, ensure_ascii=False)
+        except json.JSONDecodeError:
+            # Пробуем извлечь JSON между первыми [ и последними ]
+            json_str = json_str[json_str.find('['):json_str.rfind(']')+1]
+            try:
+                return json.dumps(json.loads(json_str), indent=2, ensure_ascii=False)
+            except:
+                return None
+    return None
 
+
+# test_prompt = "Извлеки данные: ФИО больного Иванов И.И., 35 лет"
+# inputs = tokenizer(test_prompt, return_tensors="pt").to(model.device)
+# outputs = model.generate(**inputs, max_new_tokens=50)
+# print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 
 from flask import Flask
 from flask_restful import request, Api, Resource
@@ -180,6 +237,9 @@ class Inference(Resource):
         print(f"prompt:\n{prompt}")
         output = generate(model, tokenizer, prompt, g_config)
         print(f"output:\n{output}")
+        output = clean_model_output(output)
+        print(f"output_json:\n{output}")
+        
         time_elapsed = time.time() - st_time
         mutex.release()
 
@@ -190,7 +250,7 @@ class Inference(Resource):
         return result, 200
 
 # %%
-    
+
 api.add_resource(Inference, "/inference", "/inference/")
 
 if __name__ == '__main__':
