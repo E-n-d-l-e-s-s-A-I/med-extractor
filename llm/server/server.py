@@ -163,27 +163,12 @@ def generate(model, tokenizer, prompt, generation_config):
 
 
 def clean_model_output(output):
-    import re
-    # Удаляем все служебные токены и артефакты генерации
-    cleaned = re.sub(r'<\|.*?\|>|TokenNameIdentifier|[\u0400-\u04FF]+|\W*\b\w*[а-яА-Я]\w*\b\W*', '', output)
-    
-    # Ищем первый валидный JSON в тексте
-    json_match = re.search(r'(\[\s*\{.*?\}\s*\])', cleaned, re.DOTALL)
-    
-    if json_match:
-        json_str = json_match.group(1)
-        try:
-            # Пытаемся распарсить JSON
-            parsed = json.loads(json_str)
-            return json.dumps(parsed, indent=2, ensure_ascii=False)
-        except json.JSONDecodeError:
-            # Пробуем извлечь JSON между первыми [ и последними ]
-            json_str = json_str[json_str.find('['):json_str.rfind(']')+1]
-            try:
-                return json.dumps(json.loads(json_str), indent=2, ensure_ascii=False)
-            except:
-                return None
-    return None
+    import regex
+    pattern = r'(?<!\\)(?:\\{2})*\[(?:[^\[\]{}]|(?R))*\]'
+    matches = regex.findall(pattern, output)
+    if len(matches)>0:
+        return matches[0]
+    return "invalid model output"
 
 
 # test_prompt = "Извлеки данные: ФИО больного Иванов И.И., 35 лет"

@@ -13,6 +13,7 @@ dependencies = [
     "flask-restful>=0.3.10",
     "huggingface-hub>=0.31.2",
     "peft>=0.15.2",
+    "regex>=2024.11.6",
     "safetensors>=0.5.3",
     "sentencepiece>=0.2.0",
     "streamlit>=1.45.1",
