@@ -72,7 +72,7 @@ model = AutoModelForCausalLM.from_pretrained(
     load_in_4bit = trainer_config["load_in_4bit"],
     torch_dtype = torch_dtype,
     device_map = "auto",
-    attn_implementation="flash_attention_2",
+    attn_implementation="sdpa",
 )
 print("Loaded model")
 
