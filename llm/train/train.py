@@ -49,27 +49,26 @@ elif trainer_config["torch_dtype"] == "bfloat16":
 else:
     raise ValueError(f'Incorrect configuration: incorrect value of torch_dtype parameter - \"{trainer_config["torch_dtype"]}\"')
 
-if trainer_config["load_in_8bit"] == True and trainer_config["load_in_4bit"] == False:
-    bnb_config = None
-elif trainer_config["load_in_8bit"] == False and trainer_config["load_in_4bit"] == True:
+if trainer_config["load_in_8bit"] and not trainer_config["load_in_4bit"]:
+    bnb_config = BitsAndBytesConfig(
+        load_in_8bit=True,
+    )
+elif trainer_config["load_in_4bit"] and not trainer_config["load_in_8bit"]:
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
         bnb_4bit_compute_dtype=torch_dtype,
         bnb_4bit_use_double_quant=True,
-        )
-elif trainer_config["load_in_8bit"] == False and trainer_config["load_in_4bit"] == False:
+    )
+elif not trainer_config["load_in_8bit"] and not trainer_config["load_in_4bit"]:
     bnb_config = None
 else:
-    raise ValueError(f'Incorrect configuration: load_in_8bit and load_in_4bit are mutually exclusive')
+    raise ValueError('Incorrect configuration: load_in_8bit and load_in_4bit are mutually exclusive')
 
-
-
+print(f"Конфиг:\n{bnb_config}")
 model = AutoModelForCausalLM.from_pretrained(
     trainer_config["base_model_name"],
-
-    load_in_8bit = trainer_config["load_in_8bit"],
-    load_in_4bit = trainer_config["load_in_4bit"],
+    quantization_config=bnb_config,
     torch_dtype = torch_dtype,
     device_map = "auto",
     attn_implementation="sdpa",
@@ -161,7 +160,7 @@ training_arguments = TrainingArguments(
             bf16=True if trainer_config["torch_dtype"] == "bfloat16" else False,
             logging_steps=10,
             optim="adamw_torch",
-            evaluation_strategy="steps",
+            eval_strategy="steps",
             save_strategy="steps",
             eval_steps=10,
             save_steps=10,
