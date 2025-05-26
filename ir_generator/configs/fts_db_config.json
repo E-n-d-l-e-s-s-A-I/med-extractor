@@ -1,0 +1,11 @@
+{
+    "db_connection":
+    {
+        "server": "ALEXEY-PC\\SQLEXPRESS",
+        "database": "Terminology",
+        "username": "sa",
+        "password": "sa"
+    },
+
+    "terminology_base_id": 1
+}
