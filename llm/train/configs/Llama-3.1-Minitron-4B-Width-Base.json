@@ -1,0 +1,27 @@
+{
+    "lora": {
+        "r": 32,
+        "lora_alpha": 16,
+        "lora_dropout": 0.05,
+        "bias": "none",
+        "target_modules": [
+            "q_proj",
+            "v_proj",
+            "k_proj",
+            "o_proj",
+            "gate_proj",
+            "up_proj",
+            "down_proj"
+        ],
+        "task_type": "CAUSAL_LM"
+    },
+    "base_model_name": "nvidia/Llama-3.1-Minitron-4B-Width-Base",
+    "load_in_8bit": false,
+    "load_in_4bit": true,
+    "torch_dtype": "bfloat16",
+    "output_dir": "llm/adapters/Llama-3.1-Minitron_cr_chaptered",
+    "training_dataset_path": "llm/train/dataset/train.json",
+    "validation_dataset_path": "llm/train/dataset/val.json",
+    "max_tokens_count": 131072,
+    "max_seq_length": 4000
+}
