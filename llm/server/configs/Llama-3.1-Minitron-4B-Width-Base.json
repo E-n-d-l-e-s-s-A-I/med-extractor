@@ -4,7 +4,5 @@
     "generation_config": "nvidia/Llama-3.1-Minitron-4B-Width-Base",
     "load_in_8bit": false,
     "load_in_4bit": true,
-    "torch_dtype": "bfloat16",
-    "adapter_alias": "Llama-3-1-Minitron_cr_chaptered",
-    "adapter_name": "llm/adapters/Llama-3.1-Minitron_cr_chaptered"
+    "torch_dtype": "bfloat16"
 }

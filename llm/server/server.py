@@ -171,11 +171,6 @@ def clean_model_output(output):
     return "invalid model output"
 
 
-# test_prompt = "Извлеки данные: ФИО больного Иванов И.И., 35 лет"
-# inputs = tokenizer(test_prompt, return_tensors="pt").to(model.device)
-# outputs = model.generate(**inputs, max_new_tokens=50)
-# print(tokenizer.decode(outputs[0], skip_special_tokens=True))
-
 from flask import Flask
 from flask_restful import request, Api, Resource
 import threading
