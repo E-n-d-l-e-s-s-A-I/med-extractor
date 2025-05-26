@@ -177,8 +177,9 @@ class Inference(Resource):
 
 
         prompt = c.get_prompt(tokenizer)
+        print(f"prompt:\n{prompt}")
         output = generate(model, tokenizer, prompt, g_config)
-
+        print(f"output:\n{output}")
         time_elapsed = time.time() - st_time
         mutex.release()
 
