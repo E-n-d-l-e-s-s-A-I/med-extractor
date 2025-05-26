@@ -18,7 +18,7 @@
     "base_model_name": "nvidia/Llama-3.1-Minitron-4B-Width-Base",
     "load_in_8bit": false,
     "load_in_4bit": true,
-    "torch_dtype": "bfloat16",
+    "torch_dtype": "float16",
     "output_dir": "llm/adapters/Llama-3.1-Minitron_cr_chaptered",
     "training_dataset_path": "llm/train/dataset/train.json",
     "validation_dataset_path": "llm/train/dataset/val.json",
