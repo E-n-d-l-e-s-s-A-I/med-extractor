@@ -231,8 +231,8 @@ def generate(model, tokenizer, prompt, generation_config):
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
             do_sample=True,
-            temperature=0.7,
-            top_p=0.9,
+            # temperature=0.7,
+            # top_p=0.9,
             max_new_tokens=512,
         )
 
