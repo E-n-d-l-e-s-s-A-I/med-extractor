@@ -6,8 +6,9 @@
     "timeout": 900,
     "generation_config": {
       "temperature": 0.01,
-      "max_new_tokens": 4000,
-      "repetition_penalty": 1.001
+      "max_new_tokens": 2000,
+      "repetition_penalty": 1.001,
+      "max_length": 4000
     }
   },
   "debug": false,
