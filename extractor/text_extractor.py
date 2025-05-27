@@ -10,7 +10,6 @@ from datetime import timedelta
 
 
 def extract_chapter_texts(html, output_file, config):
-
     # Извлечение текста из HTML кода
     soup = BeautifulSoup(html, features="html.parser")
     text = soup.get_text(separator=" ", strip=False)
@@ -27,7 +26,6 @@ def extract_chapter_texts(html, output_file, config):
     text_block = remove_none_text(text_block)
     save_as_json(text_block, output_file)
     return text_block
-
 
 
 def save_as_json(data, output_file):
@@ -246,10 +244,10 @@ if __name__ == "__main__":
     if not os.path.exists(config_file):
         print(f"Config file {config_file} does not exist")
         sys.exit(1)
-    
+
     with open(input_file, "r", encoding="utf-8") as file:
         html = file.read()
-    
+
     with open(config_file, "r", encoding="utf-8") as file:
         config = json.load(file)
 

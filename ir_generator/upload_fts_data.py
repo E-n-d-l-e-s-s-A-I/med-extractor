@@ -3,13 +3,14 @@ import sys
 import os
 import pyodbc
 
+
 def upload_fts_data(fts_data_file, config_file):
     # Чтение базы FTS из файла
-    with open(fts_data_file, 'r', encoding='utf-8') as file:
+    with open(fts_data_file, "r", encoding="utf-8") as file:
         fts_data = json.load(file)
 
     # Чтение конфигурации
-    with open(config_file, 'r', encoding='utf-8') as file:
+    with open(config_file, "r", encoding="utf-8") as file:
         config = json.load(file)
 
     config_db_connection = config["db_connection"]
@@ -53,22 +54,23 @@ def upload_fts_data(fts_data_file, config_file):
 
     for data in fts_data:
         cursor.execute(
-                SQL_STATEMENT,
-                config_terminology_base_id,
-                data["term_group_name"],
-                data["term_name"],
-                data["feature_name"],
-                data["value_name"],
-                data["term_keywords"],
-                data["feature_keywords"],
-                data["value_keywords"],
-                data["term_path"],
-                data["feature_path"],
-                data["value_path"]
-            )
+            SQL_STATEMENT,
+            config_terminology_base_id,
+            data["term_group_name"],
+            data["term_name"],
+            data["feature_name"],
+            data["value_name"],
+            data["term_keywords"],
+            data["feature_keywords"],
+            data["value_keywords"],
+            data["term_path"],
+            data["feature_path"],
+            data["value_path"],
+        )
 
     conn.commit()
     conn.close()
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
