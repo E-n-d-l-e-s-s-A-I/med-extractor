@@ -2,7 +2,7 @@ import json
 import sys
 import os
 import datetime
-import utilities
+from ir_generator import utilities
 # import pyodbc
 
 def generate_ir(input_file, template_file, output_file, fts_db_config_file):

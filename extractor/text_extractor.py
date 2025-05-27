@@ -9,14 +9,7 @@ from datetime import datetime
 from datetime import timedelta
 
 
-def extract_chapter_texts(input_file, output_file, config_file):
-    # Чтение конфигурационного файла
-    with open(config_file, "r", encoding="utf-8") as file:
-        config = json.load(file)
-
-    # Чтение входного файла
-    with open(input_file, "r", encoding="utf-8") as file:
-        html = file.read()
+def extract_chapter_texts(html, output_file, config):
 
     # Извлечение текста из HTML кода
     soup = BeautifulSoup(html, features="html.parser")
@@ -33,20 +26,8 @@ def extract_chapter_texts(input_file, output_file, config_file):
     get_text_data(text_block, text, config, config)
     text_block = remove_none_text(text_block)
     save_as_json(text_block, output_file)
+    return text_block
 
-    llm_enabled = config["llm_enabled"]
-    if not llm_enabled:
-        return
-
-    print("Prompting LLM")
-    st_time = time.time()
-    prompt_llm(text_block, config, text_block, output_file)
-    time_elapsed = time.time() - st_time
-    print(
-        "Total time elapsed: {}".format(timedelta(seconds=int(round((time_elapsed)))))
-    )
-
-    save_as_json(text_block, output_file)
 
 
 def save_as_json(data, output_file):
@@ -86,7 +67,7 @@ def prompt_llm(text_block, config, root_text_block, output_file):
 
     if "blocks" in text_block:
         for block in text_block["blocks"]:
-            prompt_llm(block, config, root_text_block, output_file)
+            yield from prompt_llm(block, config, root_text_block, output_file)
 
     elif "text" in text_block:
         data = text_block
@@ -146,6 +127,7 @@ def prompt_llm(text_block, config, root_text_block, output_file):
         print("Time elapsed: {}".format(timedelta(seconds=int(round((time_elapsed))))))
 
         save_as_json(root_text_block, output_file)
+        yield
 
 
 def get_split_pattern(tb_configs):
@@ -264,5 +246,11 @@ if __name__ == "__main__":
     if not os.path.exists(config_file):
         print(f"Config file {config_file} does not exist")
         sys.exit(1)
+    
+    with open(input_file, "r", encoding="utf-8") as file:
+        html = file.read()
+    
+    with open(config_file, "r", encoding="utf-8") as file:
+        config = json.load(file)
 
-    extract_chapter_texts(input_file, output_file, config_file)
+    extract_chapter_texts(input_file, output_file, config)
