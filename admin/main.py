@@ -3,12 +3,11 @@ from admin.extract_router import extract_tab_page
 
 
 def main_page():
-    extract_tabs, _ = st.tabs(
+    extract_tabs = st.tabs(
         [
             "Извлечение терминов",
-            "Валидация терминов",
         ]
-    )
+    )[0]
     extract_tab_page(extract_tabs)
 
 
