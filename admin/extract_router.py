@@ -25,10 +25,9 @@ def count_text_blocks(text_block):
 
 def extract_tab_page(term_tab):
     """Логика вкладки медицинских терминов."""
-    # Инициализация состояния в начале функции
-    init_session_state()
-    
     with term_tab:
+        init_session_state()
+         
         uploaded_file = st.file_uploader("Загрузите HTML-файл", type="html")
         
         if uploaded_file:
@@ -54,7 +53,7 @@ def extract_tab_page(term_tab):
                 st.rerun()
 
         # Блок обработки
-        if 'extract_processing' in st.session_state and st.session_state.extract_processing:
+        if st.session_state.extract_processing:
             with st.spinner("Идет извлечение терминов..."):
                 try:
                     with open("extractor/configs/extractor_config.json", "r", encoding="utf-8") as file:
@@ -79,6 +78,7 @@ def extract_tab_page(term_tab):
                             height=500,
                             key=f"result_area_{-1}"
                         )
+                    
                     
                     for i, _ in enumerate(llm_requests):
                         st.session_state.completed_requests = i + 1
@@ -111,17 +111,16 @@ def extract_tab_page(term_tab):
                     st.success("Инфоресурс сгенерирован")
                     
                     with open("ir.json", "r", encoding="utf-8") as ir:
-                        btn = st.download_button(
+                        st.download_button(
                             label="Скачать Инфоресурс",
                             data=ir,
                             file_name="ir.json",
                             mime="application/json"
                         )
-                        if btn:
-                            st.session_state.extract_processing = False
-                            st.rerun()  # Важно для обновления состояния
-                            
+                
                 except Exception as e:
                     st.error(f"Ошибка при извлечении: {str(e)}")
                     progress_bar.empty()
                     status_text.error(f"Прервано на запросе {st.session_state.completed_requests}")
+                finally:
+                    st.session_state.extract_processing = False
