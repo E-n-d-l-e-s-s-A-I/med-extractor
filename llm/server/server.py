@@ -230,10 +230,8 @@ def generate(model, tokenizer, prompt, generation_config):
             generation_config=generation_config,
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
-            do_sample=True,
+            do_sample=False ,
             max_new_tokens=512,
-            num_beams=1,
-            early_stopping=True,
         )
 
     # Декодируем только сгенерированную часть
