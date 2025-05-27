@@ -231,9 +231,9 @@ def generate(model, tokenizer, prompt, generation_config):
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
             do_sample=True,
-            temperature=0.7,
-            top_p=0.9,
-            max_new_tokens=512,  # Ограничьте длину ответа
+            max_new_tokens=512,
+            num_beams=1,
+            early_stopping=True,
         )
 
     # Декодируем только сгенерированную часть
