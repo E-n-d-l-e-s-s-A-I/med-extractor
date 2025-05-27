@@ -1,2 +1,5 @@
 llm/adapters/*
 __pycache__/*
+extract_result.json
+ir.json
+ir_generator_log.json
