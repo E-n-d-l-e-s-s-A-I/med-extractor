@@ -230,7 +230,7 @@ def generate(model, tokenizer, prompt, generation_config):
             generation_config=generation_config,
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
-            do_sample=False ,
+            do_sample=True,
             max_new_tokens=512,
         )
 
