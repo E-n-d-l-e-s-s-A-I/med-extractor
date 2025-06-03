@@ -143,11 +143,11 @@ def extract_tab_page(term_tab):
                             mime="application/json",
                         )
 
-                except Exception as e:
-                    st.error(f"Ошибка при извлечении: {str(e)}")
-                    progress_bar.empty()
-                    status_text.error(
-                        f"Прервано на запросе {st.session_state.completed_requests}"
-                    )
+                # except Exception as e:
+                #     st.error(f"Ошибка при извлечении: {str(e)}")
+                #     progress_bar.empty()
+                #     status_text.error(
+                #         f"Прервано на запросе {st.session_state.completed_requests}"
+                #     )
                 finally:
                     st.session_state.extract_processing = False

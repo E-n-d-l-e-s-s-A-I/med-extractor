@@ -339,6 +339,8 @@ def process_feature_group(input, node):
                         cq["successors"] = cq_successors
 
                     for c in d["Характеристики"]:
+                        if not isinstance(c, dict):
+                            continue
                         append_qualitative_value(
                             cq_successors,
                             c["Имя"],
