@@ -41,7 +41,7 @@ def extract_tab_page(term_tab):
                 {html_content}
             </div>
             """
-            st.components.v1.html(html_with_scroll, height=250)
+            st.components.v1.html(html_with_scroll, height=600)
 
             # Кнопка с управлением через session_state
             extract_clicked = st.button(
